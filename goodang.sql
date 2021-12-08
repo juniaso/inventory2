@@ -33,6 +33,7 @@ CREATE TABLE `barcode_group` (
   `po_id` varchar(50) DEFAULT NULL,
   `retail` varchar(50) DEFAULT NULL,
   `last_number` varchar(50) DEFAULT NULL
+  `vendor_code` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
