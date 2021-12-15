@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Page 3 - Barcode Group</title>
+  <title>Page 4 - Barcode List</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -15,7 +15,8 @@
   <script src="html2canvas.js"></script>
   
   <style>
-	  /* Add a black background color to the top navigation */
+
+/* Add a black background color to the top navigation */
 .topnav {
   background-color: #333;
   overflow: hidden;
@@ -42,22 +43,23 @@
   background-color: #04AA6D;
   color: white;
 }
+
   #display {
     text-align:center;
   }
   
  
   div#display {
-    display: flex;
+    display: block;
     height: 100%;
     width: 100%;
     align-items: center;
 }
 @media print{
   div#display {
-    display: flex;
+    display: block;
     height: auto;
-    width: 100%;
+    width: 500px;
     align-items: center;
 }
 }
@@ -169,7 +171,7 @@ function generate(code){
           console.log(err)
         },
         success:function(resp){
-          $('#display').html(resp);
+          $('#display').append(resp);
 		  $('.card-footer').show('slideUp')
           
         }
@@ -178,13 +180,14 @@ function generate(code){
 }
 </script>  
 </head>
-	 <header><div class="topnav">
+<header><div class="topnav">
   <a href="/public/uploads/barcode2/index.php">Vendor Master</a>
   <a href="/public/uploads/barcode2/page2.php">PO Master</a>
   <a href="/public/uploads/barcode2/page3.php">Barcode Group</a>
   <a class="active" href="/public/uploads/barcode2/page4.php">Barcode Print</a>
 </div></header>
 	  <br><br>
+
 <body>
 
 <div class="container" style="width:700px;">
@@ -195,12 +198,17 @@ function generate(code){
       <label>Barcode Group Number:</label>
 	  <select class="form-control" name="barcode_num" id="barcode_num">
 		<?php
-$barcode_group_numbers = mysqli_query($con,"SELECT * from barcode_group");
+		$barcode_group_numbers = mysqli_query($con,"SELECT * from barcode_group");
 		while($bgn = mysqli_fetch_array($barcode_group_numbers)){
 			echo '<option value="'.$bgn['barcode_number'].'">'.$bgn['barcode_number'].'</option>';	
 		}
 		?>
 	  </select>
+    </div>
+	
+	<div class="form-group">
+      <label for="barcodes">How Many Barcodes?</label>
+      <input type="number" required class="form-control" value="1" id="vendor_code" placeholder="How Many Barcodes?" name="barcodes_qty">
     </div>
 	
 	<div class="form-group">
@@ -218,7 +226,8 @@ $barcode_group_numbers = mysqli_query($con,"SELECT * from barcode_group");
 		
 		$barcode_num = $_POST['barcode_num'];
 		$last_num = $_POST['last_num'];
-		$seq;
+		$barcodes_qty = $_POST['barcodes_qty'];
+		$seq;$success=0;
 		
 		if(empty($barcode_num)){
 			echo '<div class="alert alert-danger">
@@ -228,7 +237,7 @@ $barcode_group_numbers = mysqli_query($con,"SELECT * from barcode_group");
 		}
 		
 		
-		
+		for($i=1;$i<=$barcodes_qty;$i++){
 		if($last_num=='-'){
 			
 			$seq = 1;
@@ -241,15 +250,17 @@ $barcode_group_numbers = mysqli_query($con,"SELECT * from barcode_group");
 		}
 		
 		$new_barcode_num = $barcode_num . $seq;
+		$last_num = $new_barcode_num;
+		
 		
 		
 		$check_num = mysqli_query($con,"SELECT * from barcode_list where barcode_numer = '$new_barcode_num' && barcode_group_id = '$barcode_num'");
 		$cn = mysqli_fetch_array($check_num);
 			if($cn){
 				echo '<div class="alert alert-danger">
-				<strong>Alert!</strong> Barcode already created! Refresh page and try again!.
+				<strong>Alert!</strong> '.$new_barcode_num.' Barcode already created! Refresh page and try again!.
 				</div>';
-				die();
+				continue;
 			}		
 		
 		
@@ -258,21 +269,35 @@ $barcode_group_numbers = mysqli_query($con,"SELECT * from barcode_group");
 		if($insert_query){
 			
 			$update_lastnum_query = mysqli_query($con,"UPDATE `barcode_group` SET `last_number`= '".$new_barcode_num."' where barcode_number = '".$barcode_num."'");
-			echo '<div class="alert alert-success">
-				  <strong>Success!</strong> New Barcode added successfully.
-				  </div>';
+			
 			echo '<input type="hidden" value="'.$new_barcode_num.'" id="code">'; 	  
 			?>
 			<script>
 			generate(<?php echo "'".$new_barcode_num."'" ?>)
 			</script>
 			<?php
-  
+			$success = 1;
+			
+		}
+		
+		else{
+			$success = 0;
+			
+		}
+		}
+		
+		if($success == 1){
+			echo '<div class="alert alert-success">
+				  <strong>Success!</strong> New Barcode added successfully.
+				  </div>';
+			
 		}
 		else{
+			
 			echo '<div class="alert alert-danger">
 			<strong>Error!</strong> Barcode adding failed due to unknown reason.
 			</div>';
+			
 		}
 		
 	}
