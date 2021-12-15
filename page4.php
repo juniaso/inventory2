@@ -15,35 +15,6 @@
   <script src="html2canvas.js"></script>
   
   <style>
-
-/* Add a black background color to the top navigation */
-.topnav {
-  background-color: #333;
-  overflow: hidden;
-}
-
-/* Style the links inside the navigation bar */
-.topnav a {
-  float: left;
-  color: #f2f2f2;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
-}
-
-/* Change the color of links on hover */
-.topnav a:hover {
-  background-color: #ddd;
-  color: black;
-}
-
-/* Add a color to the active/current link */
-.topnav a.active {
-  background-color: #04AA6D;
-  color: white;
-}
-
   #display {
     text-align:center;
   }
@@ -62,6 +33,8 @@
     width: 500px;
     align-items: center;
 }
+
+.print {page-break-after:always;}
 }
 #display #field,#display center {
     margin: auto;
@@ -180,14 +153,6 @@ function generate(code){
 }
 </script>  
 </head>
-<header><div class="topnav">
-  <a href="/public/uploads/barcode2/index.php">Vendor Master</a>
-  <a href="/public/uploads/barcode2/page2.php">PO Master</a>
-  <a href="/public/uploads/barcode2/page3.php">Barcode Group</a>
-  <a class="active" href="/public/uploads/barcode2/page4.php">Barcode Print</a>
-</div></header>
-	  <br><br>
-
 <body>
 
 <div class="container" style="width:700px;">

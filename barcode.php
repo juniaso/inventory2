@@ -13,8 +13,9 @@ foreach(str_split($code) as $key => $c){
 }
 ?>
 
-<div id="field">
+<div id="field" class="print">
 <center><large><b><?php echo $label ?></b></large></center>
 <img src="data:image/png;base64,<?php echo base64_encode($generator->getBarcode($code, $type)) ?>">
 <div id="code"><?php echo $code2 ?></div>
 </div>
+<br clear="all" style="page-break-before:always" />
